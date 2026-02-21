@@ -1,6 +1,6 @@
 {
   "name": "@camai/common",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "CamWebSys shared UI components and templates",
   "license": "MIT",
   "type": "module",
