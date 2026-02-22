@@ -1,1 +1,2 @@
-export { default as Login1 } from "./Login1";
+export { default as Login } from "./Login";
+export { default as FullScreenLogin } from "./FullScreenLogin";
