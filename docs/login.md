@@ -39,6 +39,11 @@ import Login from "@camai/common/auth/Login";
 | `isLoading` | `boolean` | No | Disables inputs and shows loading text |
 | `error` | `string \| null` | No | Shows a red error banner |
 | `success` | `string \| null` | No | Shows a green success banner |
+| `theme` | `"light" \| "dark" \| "auto"` | No | Force a color theme. Defaults to `"auto"` (follows OS / localStorage) |
+| `title` | `string` | No | Heading text. Defaults to `"Welcome back"` |
+| `subtitle` | `string` | No | Subheading text. Defaults to `"Sign in to your account to continue"` |
+| `submitLabel` | `string` | No | Submit button label. Defaults to `"Sign in"` |
+| `footer` | `ReactNode` | No | Content rendered below the form inside the card (e.g. forgot password link) |
 
 ---
 
@@ -68,7 +73,12 @@ import FullScreenLogin from "@camai/common/auth/FullScreenLogin";
 | `success` | `string \| null` | No | Shows a green success banner |
 | `companyName` | `string` | No | Shown in the top bar and left panel footer. Defaults to `"Your Company"` |
 | `companyLogo` | `string` | No | URL of logo image shown in the top bar and left panel |
-| `system.theme` | `"light" \| "dark"` | No | Initial color theme. Defaults to `"light"` |
+| `theme` | `"light" \| "dark" \| "auto"` | No | Force a color theme. Defaults to `"auto"` (follows OS / localStorage) |
+| `title` | `string` | No | Heading text on the form side. Defaults to `"Welcome back."` |
+| `subtitle` | `string` | No | Subheading text on the form side. Defaults to `"Sign in to continue where you left off."` |
+| `submitLabel` | `string` | No | Submit button label. Defaults to `"Sign in"` |
+| `footer` | `ReactNode` | No | Content rendered below the form (e.g. forgot password link) |
+| `tagline` | `ReactNode` | No | Custom content for the left decorative panel. Replaces the default italic tagline |
 
 ---
 
