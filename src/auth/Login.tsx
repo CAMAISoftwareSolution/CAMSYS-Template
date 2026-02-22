@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { Button } from "../ui";
 
 export type Field =
@@ -16,6 +16,8 @@ export type LoginProps = {
   error?: string | null;
   success?: string | null;
   theme?: "light" | "dark" | "auto";
+  logo?: string;
+  logoAlt?: string;
   title?: string;
   subtitle?: string;
   submitLabel?: string;
@@ -29,6 +31,8 @@ export default function Login({
   error,
   success,
   theme,
+  logo,
+  logoAlt = "Logo",
   title = "Welcome back",
   subtitle = "Sign in to your account to continue",
   submitLabel = "Sign in",
@@ -36,27 +40,31 @@ export default function Login({
 }: LoginProps) {
   const [values, setValues] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
   // ── Dark mode: prop → localStorage → OS preference ───────────────────────
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(theme === "dark");
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (theme) {
       setIsDark(theme === "dark");
+      setIsReady(true);
       return;
     }
     const saved = localStorage.getItem("theme");
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     setIsDark(saved === "dark" || (!saved && prefersDark));
+    setIsReady(true);
   }, [theme]);
 
   useEffect(() => {
+    if (theme && theme !== "auto") return; // explicit prop wins — no observer needed
     const observer = new MutationObserver(() => {
       setIsDark(document.documentElement.classList.contains("dark"));
     });
     observer.observe(document.documentElement, { attributeFilter: ["class"] });
     return () => observer.disconnect();
-  }, []);
+  }, [theme]);
 
   // ── Design tokens ──────────────────────────────────────────────────────────
   const T = {
@@ -82,18 +90,30 @@ export default function Login({
     onLogin?.(values);
   };
 
+  if (!isReady) return null;
+
   return (
     <div className={`h-full flex items-center justify-center ${T.pageBg} px-4 py-8 transition-colors duration-300`}>
       <div className="w-full max-w-sm">
 
         {/* Header */}
         <div className="text-center mb-8">
-          <div className={`inline-flex items-center justify-center w-12 h-12 rounded-2xl ${T.iconBg} mb-4 transition-colors duration-300`}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-          </div>
+          {logo ? (
+            <div className="inline-flex items-center justify-center w-12 h-12 mb-4">
+              <img
+                src={logo}
+                alt={logoAlt}
+                className="w-12 h-12 object-contain"
+              />
+            </div>
+          ) : (
+            <div className={`inline-flex items-center justify-center w-12 h-12 rounded-2xl ${T.iconBg} mb-4 transition-colors duration-300`}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </div>
+          )}
           <h1 className={`text-2xl font-bold tracking-tight transition-colors duration-300 ${T.heading}`}>{title}</h1>
           <p className={`text-sm mt-1 transition-colors duration-300 ${T.subtext}`}>{subtitle}</p>
         </div>

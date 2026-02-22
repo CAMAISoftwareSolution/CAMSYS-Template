@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 
 export type Field =
   | { name: "email"; label?: string; type?: "email"; placeholder?: string }
@@ -40,7 +40,8 @@ export default function FullScreenLogin({
 }: FullScreenLoginProps) {
   const [values, setValues] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(theme === "dark");
+  const [isReady, setIsReady] = useState(false);
 
   // ── Container-width detection (not viewport) ──────────────────────────────
   // So the split layout works inside the phone frame (358px) vs desktop (full width)
@@ -59,23 +60,26 @@ export default function FullScreenLogin({
   }, []);
 
   // ── Dark mode via prop → localStorage → OS preference ───────────────────────
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (theme) {
       setIsDark(theme === "dark");
+      setIsReady(true);
       return;
     }
     const saved = localStorage.getItem("theme");
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     setIsDark(saved === "dark" || (!saved && prefersDark));
+    setIsReady(true);
   }, [theme]);
 
   useEffect(() => {
+    if (theme && theme !== "auto") return; // explicit prop wins — no observer needed
     const observer = new MutationObserver(() => {
       setIsDark(document.documentElement.classList.contains("dark"));
     });
     observer.observe(document.documentElement, { attributeFilter: ["class"] });
     return () => observer.disconnect();
-  }, []);
+  }, [theme]);
 
   const handleChange = (name: string, value: string) =>
     setValues((prev) => ({ ...prev, [name]: value }));
@@ -84,6 +88,8 @@ export default function FullScreenLogin({
     e.preventDefault();
     onLogin?.(values);
   };
+
+  if (!isReady) return null;
 
   // ── Design tokens ─────────────────────────────────────────────────────────
   const t = isDark
