@@ -9,7 +9,7 @@ export type Field =
   | { name: "phone"; label?: string; type?: "tel"; placeholder?: string }
   | { name: "password"; label?: string; type?: "password"; placeholder?: string };
 
-export type Login1Props = {
+export type LoginProps = {
   fields: Field[];
   onLogin?: (values: Record<string, string>) => void;
   isLoading?: boolean;
@@ -17,13 +17,13 @@ export type Login1Props = {
   success?: string | null;
 };
 
-export default function Login1({
+export default function Login({
   fields,
   onLogin,
   isLoading,
   error,
   success,
-}: Login1Props) {
+}: LoginProps) {
   const [values, setValues] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
 
@@ -88,7 +88,7 @@ export default function Login1({
                 (field.name === "email"
                   ? "you@example.com"
                   : field.name === "username"
-                  ? "e.g. chesthareah"
+                  ? "e.g. username"
                   : field.name === "phone"
                   ? "e.g. 012345678"
                   : "••••••••");

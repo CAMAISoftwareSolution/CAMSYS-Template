@@ -15,9 +15,9 @@ npm i @camai/common
 A ready-to-use login form component with support for email, username, phone, and password fields.
 
 ```tsx
-import Login1 from "@camai/common/auth/Login1";
+import Login from "@camai/common/auth/Login";
 
-<Login1
+<Login
   fields={[{ name: "email" }, { name: "password" }]}
   onLogin={(values) => console.log(values)}
 />

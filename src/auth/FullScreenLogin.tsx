@@ -7,30 +7,33 @@ export type Field =
   | { name: "phone"; label?: string; type?: "tel"; placeholder?: string }
   | { name: "password"; label?: string; type?: "password"; placeholder?: string };
 
-export type Login2Props = {
+export type FullScreenLoginProps = {
   fields: Field[];
   onLogin?: (values: Record<string, string>) => void;
   isLoading?: boolean;
   error?: string | null;
   success?: string | null;
-  /** Control the initial theme from outside. Defaults to "dark". */
+  /** Company name shown in the top bar and left panel footer. */
+  companyName?: string;
+  /** URL of the company logo shown in the top bar and left panel. */
+  companyLogo?: string;
+  /** Control the initial theme from outside. Defaults to "light". */
   system?: { theme?: "light" | "dark" };
 };
 
-export default function Login2({
+export default function FullScreenLogin({
   fields,
   onLogin,
   isLoading,
   error,
   success,
+  companyName = "Your Company",
+  companyLogo,
   system,
-}: Login2Props) {
+}: FullScreenLoginProps) {
   const [values, setValues] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
 
-  // ✅ Reads system.theme to set the initial state correctly.
-  // system={{ theme: "light" }} → isDark starts as false (light mode)
-  // system={{ theme: "dark" }} or omitted → isDark starts as true (dark mode)
   const [isDark, setIsDark] = useState(system?.theme === "dark");
 
   const handleChange = (name: string, value: string) => {
@@ -43,68 +46,77 @@ export default function Login2({
   };
 
   // ── Token maps ──────────────────────────────────────────────────────────────
+  // Colors now mirror Login: grays, black accent, red/green alerts
   const t = isDark
     ? {
-        root:          "bg-[#0c0c0e]",
-        topBar:        "bg-[#0c0c0e] border-[#1e1e24]",
-        panel:         "bg-[#111114] border-[#1e1e24]",
-        formBg:        "bg-[#0c0c0e]",
-        inputBg:       "bg-[#16161a]",
-        inputFocusBg:  "focus:bg-[#18181e]",
-        inputBorder:   "border-[#222228]",
-        tagline:       "text-[#e8e8e0]",
-        panelFooter:   "text-[#3a3a44]",
-        brandText:     "text-[#5a5a66]",
-        heading:       "text-[#f0f0ea]",
-        sub:           "text-[#4a4a56]",
-        label:         "text-[#4a4a56]",
-        inputText:     "text-[#e8e8e0]",
-        placeholder:   "placeholder-[#2e2e38]",
-        toggleText:    "text-[#3a3a46]",
-        spinnerBorder: "border-[rgba(12,12,14,0.3)] border-t-[#0c0c0e]",
-        toggleBg:      "bg-[#e8c97a]",
-        thumbBg:       "bg-[#0c0c0e]",
+        root:          "bg-gray-950",
+        topBar:        "bg-gray-950 border-gray-800",
+        panel:         "bg-gray-900 border-gray-800",
+        formBg:        "bg-gray-950",
+        inputBg:       "bg-gray-900",
+        inputFocusBg:  "focus:bg-gray-800",
+        inputBorder:   "border-gray-700",
+        tagline:       "text-gray-100",
+        panelFooter:   "text-gray-600",
+        brandText:     "text-gray-500",
+        heading:       "text-gray-100",
+        sub:           "text-gray-500",
+        label:         "text-gray-400",
+        inputText:     "text-gray-100",
+        placeholder:   "placeholder-gray-600",
+        toggleText:    "text-gray-500",
+        spinnerBorder: "border-gray-800 border-t-gray-950",
+        toggleBg:      "bg-gray-800",
+        thumbBg:       "bg-gray-950",
         thumbPos:      "translate-x-0",
       }
     : {
-        root:          "bg-[#f5f4f0]",
-        topBar:        "bg-[#f5f4f0] border-[#ddd9ce]",
-        panel:         "bg-[#eeeae0] border-[#ddd9ce]",
-        formBg:        "bg-[#f5f4f0]",
-        inputBg:       "bg-white",
+        root:          "bg-gray-50",
+        topBar:        "bg-gray-50 border-gray-200",
+        panel:         "bg-white border-gray-200",
+        formBg:        "bg-gray-50",
+        inputBg:       "bg-gray-50",
         inputFocusBg:  "focus:bg-white",
-        inputBorder:   "border-[#ddd9ce]",
-        tagline:       "text-[#1a1a14]",
-        panelFooter:   "text-[#b0aa9a]",
-        brandText:     "text-[#9a9488]",
-        heading:       "text-[#1a1a14]",
-        sub:           "text-[#7a7468]",
-        label:         "text-[#7a7468]",
-        inputText:     "text-[#1a1a14]",
-        placeholder:   "placeholder-[#c0bbb0]",
-        toggleText:    "text-[#b0aa9a]",
-        spinnerBorder: "border-[rgba(245,244,240,0.4)] border-t-[#0c0c0e]",
-        toggleBg:      "bg-[#ddd9ce]",
+        inputBorder:   "border-gray-200",
+        tagline:       "text-gray-900",
+        panelFooter:   "text-gray-400",
+        brandText:     "text-gray-500",
+        heading:       "text-gray-900",
+        sub:           "text-gray-500",
+        label:         "text-gray-700",
+        inputText:     "text-gray-900",
+        placeholder:   "placeholder-gray-400",
+        toggleText:    "text-gray-400",
+        spinnerBorder: "border-gray-200 border-t-gray-900",
+        toggleBg:      "bg-gray-200",
         thumbBg:       "bg-white",
         thumbPos:      "translate-x-7",
       };
 
   const orbGradient = isDark
-    ? "radial-gradient(circle at 40% 40%, rgba(232,201,122,0.06) 0%, transparent 70%)"
-    : "radial-gradient(circle at 40% 40%, rgba(232,201,122,0.18) 0%, transparent 70%)";
+    ? "radial-gradient(circle at 40% 40%, rgba(0,0,0,0.3) 0%, transparent 70%)"
+    : "radial-gradient(circle at 40% 40%, rgba(0,0,0,0.04) 0%, transparent 70%)";
 
   return (
     <div
       className={`min-h-screen flex flex-col transition-colors duration-300 ${t.root}`}
-      style={{ fontFamily: "'DM Sans', sans-serif" }}
+      // Font changed to match Login: system sans-serif stack (Tailwind default)
     >
       {/* ── Top bar ── */}
       <div className={`w-full flex items-center justify-between px-6 py-3 border-b transition-colors duration-300 ${t.topBar}`}>
         {/* Brand */}
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-[#e8c97a]" />
+        <div className="flex items-center gap-2.5">
+          {companyLogo ? (
+            <img
+              src={companyLogo}
+              alt={companyName}
+              className="h-7 w-auto object-contain"
+            />
+          ) : (
+            <div className="w-2 h-2 rounded-full bg-black" />
+          )}
           <span className={`text-[0.78rem] font-medium tracking-[0.14em] uppercase transition-colors duration-300 ${t.brandText}`}>
-            Your Company
+            {companyName}
           </span>
         </div>
 
@@ -140,18 +152,26 @@ export default function Login2({
             style={{ background: orbGradient }}
           />
           <div className="relative">
-            <div className="w-14 h-[3px] bg-[#e8c97a] rounded-full mb-6" />
+            {companyLogo ? (
+              <img
+                src={companyLogo}
+                alt={companyName}
+                className="h-12 w-auto object-contain mb-8"
+              />
+            ) : (
+              <div className="w-14 h-[3px] bg-black rounded-full mb-6" />
+            )}
             <p
               className={`text-[2.1rem] leading-[1.3] max-w-[280px] italic font-normal transition-colors duration-300 ${t.tagline}`}
-              style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
             >
               The place where<br />
-              <strong className="not-italic font-bold text-[#e8c97a]">great work</strong><br />
+              {/* Accent text: black */}
+              <strong className="not-italic font-bold text-black">great work</strong><br />
               begins.
             </p>
           </div>
           <span className={`relative text-[0.72rem] tracking-widest uppercase transition-colors duration-300 ${t.panelFooter}`}>
-            © 2026 Your Company
+            © {new Date().getFullYear()} {companyName}
           </span>
         </div>
 
@@ -160,20 +180,18 @@ export default function Login2({
           <div className="w-full max-w-[400px] pt-4">
 
             <h1
-              className={`text-[2.2rem] leading-[1.15] mb-1.5 font-bold transition-colors duration-300 ${t.heading}`}
-              style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+              className={`text-[2.2rem] leading-[1.15] mb-1.5 font-bold tracking-tight transition-colors duration-300 ${t.heading}`}
             >
               Welcome<br />back.
             </h1>
-            <p className={`text-[0.87rem] font-light mb-8 leading-relaxed transition-colors duration-300 ${t.sub}`}>
+            <p className={`text-sm font-light mb-8 leading-relaxed transition-colors duration-300 ${t.sub}`}>
               Sign in to continue where you left off.
             </p>
 
-            {/* Error alert */}
+            {/* Error alert — colors match Login's red-50/red-700/red-100 */}
             {error && (
               <div
-                className="flex items-start gap-3 px-4 py-3.5 rounded-[10px] mb-6 text-[0.82rem] leading-snug text-[#c0402a] border"
-                style={{ background: "rgba(220,80,60,0.1)", borderColor: "rgba(220,80,60,0.2)" }}
+                className="flex items-start gap-2 text-sm text-red-700 bg-red-50 border border-red-100 rounded-lg px-4 py-3 mb-6"
                 role="alert"
               >
                 <svg className="w-4 h-4 shrink-0 mt-0.5" viewBox="0 0 16 16" fill="none">
@@ -184,11 +202,10 @@ export default function Login2({
               </div>
             )}
 
-            {/* Success alert */}
+            {/* Success alert — colors match Login's green-50/green-700/green-100 */}
             {success && (
               <div
-                className="flex items-start gap-3 px-4 py-3.5 rounded-[10px] mb-6 text-[0.82rem] leading-snug text-[#2a8a58] border"
-                style={{ background: "rgba(80,180,120,0.1)", borderColor: "rgba(80,180,120,0.2)" }}
+                className="flex items-start gap-2 text-sm text-green-700 bg-green-50 border border-green-100 rounded-lg px-4 py-3 mb-6"
                 role="alert"
               >
                 <svg className="w-4 h-4 shrink-0 mt-0.5" viewBox="0 0 16 16" fill="none">
@@ -232,7 +249,7 @@ export default function Login2({
                     <div key={field.name}>
                       <label
                         htmlFor={field.name}
-                        className={`block text-[0.72rem] font-medium tracking-[0.1em] uppercase mb-2 transition-colors duration-300 ${t.label}`}
+                        className={`block text-sm font-medium mb-1.5 transition-colors duration-300 ${t.label}`}
                       >
                         {label}
                       </label>
@@ -246,10 +263,11 @@ export default function Login2({
                           placeholder={placeholder}
                           disabled={isLoading}
                           className={[
-                            "w-full border rounded-[10px]",
-                            "px-4 py-3.5 text-[0.9rem]",
+                            "w-full border rounded-xl",
+                            "px-3.5 py-2.5 text-sm",
                             "outline-none transition-all duration-200",
-                            "focus:border-[#e8c97a]",
+                            // Black focus ring to match Login's focus:ring-black
+                            "focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent",
                             "disabled:opacity-50 disabled:cursor-not-allowed",
                             t.inputBg,
                             t.inputFocusBg,
@@ -264,7 +282,7 @@ export default function Login2({
                             type="button"
                             onClick={() => setShowPassword((v) => !v)}
                             disabled={isLoading}
-                            className={`absolute right-4 top-1/2 -translate-y-1/2 text-[0.7rem] font-medium tracking-[0.08em] uppercase hover:text-[#e8c97a] transition-colors duration-150 disabled:opacity-40 disabled:cursor-not-allowed ${t.toggleText}`}
+                            className={`absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-medium hover:text-gray-700 transition-colors duration-150 disabled:opacity-40 disabled:cursor-not-allowed ${t.toggleText}`}
                           >
                             {showPassword ? "Hide" : "Show"}
                           </button>
@@ -275,11 +293,11 @@ export default function Login2({
                 })}
               </div>
 
-              {/* Submit */}
+              {/* Submit — black button to match Login's black Button */}
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3.5 bg-[#e8c97a] text-[#0c0c0e] text-[0.87rem] font-medium tracking-[0.06em] rounded-[10px] cursor-pointer transition-all duration-200 hover:bg-[#f0d88a] hover:-translate-y-px active:translate-y-0 disabled:opacity-55 disabled:cursor-not-allowed"
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-black text-white text-sm font-medium rounded-xl cursor-pointer transition-all duration-200 hover:bg-gray-800 hover:-translate-y-px active:translate-y-0 disabled:opacity-55 disabled:cursor-not-allowed"
               >
                 {isLoading && (
                   <span className={`w-3.5 h-3.5 border-2 rounded-full animate-spin shrink-0 ${t.spinnerBorder}`} />

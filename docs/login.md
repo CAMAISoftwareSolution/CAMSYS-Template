@@ -1,6 +1,13 @@
-# Login Component
+# Login
 
-A flexible login form that supports email, username, phone, and password fields — with built-in show/hide password, loading state, and error/success feedback.
+Two ready-to-use login components with flexible fields, show/hide password, loading state, and error/success feedback.
+
+| Component | Description |
+|---|---|
+| `Login` | Compact centered card — good for standalone login pages |
+| `FullScreenLogin` | Split-screen layout with company branding and dark mode toggle |
+
+---
 
 ## Installation
 
@@ -8,48 +15,124 @@ A flexible login form that supports email, username, phone, and password fields 
 npm i @camai/common
 ```
 
-## Basic Usage
+---
+
+## Login
+
+A minimal centered card form.
 
 ```tsx
-import Login1 from "@camai/common/auth/Login1";
+import Login from "@camai/common/auth/Login";
 
-export default function LoginPage() {
-  const handleLogin = async (values: Record<string, string>) => {
-    const data = await login(values.email, values.password);
-    localStorage.setItem("token", data.access_token);
-  };
-
-  return (
-    <Login1
-      fields={[{ name: "email" }, { name: "password" }]}
-      onLogin={handleLogin}
-    />
-  );
-}
+<Login
+  fields={[{ name: "email" }, { name: "password" }]}
+  onLogin={(values) => console.log(values.email, values.password)}
+/>
 ```
 
-## Field Combinations
+### Props
 
-The `fields` prop controls which inputs are shown, and in what order.
+| Prop | Type | Required | Description |
+|---|---|---|---|
+| `fields` | `Field[]` | Yes | Fields to render, in order |
+| `onLogin` | `(values: Record<string, string>) => void` | No | Called on submit |
+| `isLoading` | `boolean` | No | Disables inputs and shows loading text |
+| `error` | `string \| null` | No | Shows a red error banner |
+| `success` | `string \| null` | No | Shows a green success banner |
 
-**Email + Password**
+---
+
+## FullScreenLogin
+
+A full-screen split layout — decorative left panel with company branding, form on the right, built-in dark mode toggle.
+
 ```tsx
+import FullScreenLogin from "@camai/common/auth/FullScreenLogin";
+
+<FullScreenLogin
+  fields={[{ name: "username" }, { name: "password" }]}
+  onLogin={(values) => console.log(values)}
+  companyName="Acme"
+  companyLogo="https://example.com/logo.svg"
+/>
+```
+
+### Props
+
+| Prop | Type | Required | Description |
+|---|---|---|---|
+| `fields` | `Field[]` | Yes | Fields to render, in order |
+| `onLogin` | `(values: Record<string, string>) => void` | No | Called on submit |
+| `isLoading` | `boolean` | No | Disables inputs and shows spinner |
+| `error` | `string \| null` | No | Shows a red error banner |
+| `success` | `string \| null` | No | Shows a green success banner |
+| `companyName` | `string` | No | Shown in the top bar and left panel footer. Defaults to `"Your Company"` |
+| `companyLogo` | `string` | No | URL of logo image shown in the top bar and left panel |
+| `system.theme` | `"light" \| "dark"` | No | Initial color theme. Defaults to `"light"` |
+
+---
+
+## Fields
+
+Both components share the same `Field` type. The `fields` array controls which inputs appear and in what order.
+
+```ts
+type Field =
+  | { name: "email";    label?: string; placeholder?: string }
+  | { name: "username"; label?: string; placeholder?: string }
+  | { name: "phone";    label?: string; placeholder?: string }
+  | { name: "password"; label?: string; placeholder?: string }
+```
+
+### Field options
+
+| Key | Type | Description |
+|---|---|---|
+| `name` | `"email" \| "username" \| "phone" \| "password"` | Identifies the field. Used as the key in the `values` object passed to `onLogin` |
+| `label` | `string` | Override the default label text |
+| `placeholder` | `string` | Override the default placeholder |
+
+### Default labels & placeholders
+
+| `name` | Default label | Default placeholder |
+|---|---|---|
+| `email` | Email address | you@example.com |
+| `username` | Username | e.g. username |
+| `phone` | Phone number | e.g. 012345678 |
+| `password` | Password | •••••••• |
+
+### Common combinations
+
+```tsx
+// Email + password
 fields={[{ name: "email" }, { name: "password" }]}
-```
 
-**Username only**
-```tsx
-fields={[{ name: "username" }]}
-```
+// Username + password
+fields={[{ name: "username" }, { name: "password" }]}
 
-**Phone + Password**
-```tsx
+// Phone + password
 fields={[{ name: "phone" }, { name: "password" }]}
+
+// Username only (passwordless)
+fields={[{ name: "username" }]}
+
+// Custom labels
+fields={[
+  { name: "email", label: "Work email", placeholder: "you@company.com" },
+  { name: "password" },
+]}
 ```
+
+---
 
 ## With Loading & Error State
 
 ```tsx
+"use client";
+
+import { useState } from "react";
+import Login from "@camai/common/auth/Login";
+
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -70,7 +153,7 @@ export default function LoginPage() {
   };
 
   return (
-    <Login1
+    <Login
       fields={[{ name: "email" }, { name: "password" }]}
       onLogin={handleLogin}
       isLoading={isLoading}
@@ -80,6 +163,8 @@ export default function LoginPage() {
   );
 }
 ```
+
+---
 
 ## Connecting to your API
 
@@ -100,27 +185,8 @@ export async function login(email: string, password: string) {
   });
 
   const data = await res.json().catch(() => ({}));
-
   if (!res.ok) throw new Error(data?.message || "Login failed");
 
   return data as { access_token: string };
 }
 ```
-
-## Props
-
-| Prop        | Type                                    | Required | Description                              |
-|-------------|-----------------------------------------|----------|------------------------------------------|
-| `fields`    | `Field[]`                               | Yes      | List of fields to render                 |
-| `onLogin`   | `(values: Record<string, string>) => void` | No    | Called on form submit with field values  |
-| `isLoading` | `boolean`                               | No       | Disables inputs and shows loading text   |
-| `error`     | `string \| null`                        | No       | Shows a red error banner                 |
-| `success`   | `string \| null`                        | No       | Shows a green success banner             |
-
-### Field options
-
-| Key           | Type     | Description                          |
-|---------------|----------|--------------------------------------|
-| `name`        | `"email" \| "username" \| "phone" \| "password"` | Field identifier |
-| `label`       | `string` | Override the default label text      |
-| `placeholder` | `string` | Override the default placeholder     |
