@@ -41,6 +41,7 @@ export default function Login({
   const [values, setValues] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
   const [isReady, setIsReady] = useState(false);
+  const [logoFailed, setLogoFailed] = useState(false);
 
   // ── Dark mode: prop → localStorage → OS preference ───────────────────────
   const [isDark, setIsDark] = useState(theme === "dark");
@@ -65,6 +66,10 @@ export default function Login({
     observer.observe(document.documentElement, { attributeFilter: ["class"] });
     return () => observer.disconnect();
   }, [theme]);
+
+  useEffect(() => {
+    setLogoFailed(false);
+  }, [logo]);
 
   // ── Design tokens ──────────────────────────────────────────────────────────
   const T = {
@@ -98,12 +103,13 @@ export default function Login({
 
         {/* Header */}
         <div className="text-center mb-8">
-          {logo ? (
+          {logo && !logoFailed ? (
             <div className="inline-flex items-center justify-center w-12 h-12 mb-4">
               <img
                 src={logo}
                 alt={logoAlt}
                 className="w-12 h-12 object-contain"
+                onError={() => setLogoFailed(true)}
               />
             </div>
           ) : (
