@@ -314,7 +314,7 @@ export default function FullScreenLogin({
       >
         {/* Top bar with brand */}
         <div
-          className={`shrink-0 flex items-center gap-2.5 px-5 py-4 border-b ${t.mobileHeader} transition-colors duration-300`}
+          className={`shrink-0 flex items-center justify-center gap-2.5 px-5 py-4 duration-300`}
         >
           {companyLogo ? (
             <img src={companyLogo} alt={companyName} className="h-6 w-auto object-contain" />
