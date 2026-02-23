@@ -27,11 +27,11 @@
       "import": "./dist/auth.js",
       "require": "./dist/auth.cjs"
     },
-    "./styles.css": "./src/styles/index.css"
+    "./styles.css": "./dist/styles.css"
   },
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
+    "build": "tsup && npx @tailwindcss/cli -i ./src/styles/index.css -o ./dist/styles.css",
+    "dev": "tsup --watch & npx @tailwindcss/cli -i ./src/styles/index.css -o ./dist/styles.css --watch",
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
@@ -39,8 +39,10 @@
     "react-dom": "^18 || ^19"
   },
   "devDependencies": {
+    "@tailwindcss/cli": "^4.2.0",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "tailwindcss": "^4.2.0",
     "tsup": "^8.0.0",
     "typescript": "^5.0.0"
   }

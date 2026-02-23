@@ -1,0 +1,41 @@
+
+> @camai/common@0.2.9 build
+> tsup && npx @tailwindcss/cli -i ./src/styles/index.css -o ./dist/styles.css
+
+CLI Building entry: {"index":"src/index.ts","ui":"src/ui/index.ts","auth":"src/auth/index.ts"}
+CLI Using tsconfig: tsconfig.json
+CLI tsup v8.5.1
+CLI Using tsup config: /home/hellodev/Desktop/CAMWEBSYSTEM/camwebsys-common/tsup.config.ts
+CLI Target: es2020
+CLI Cleaning output folder
+ESM Build start
+CJS Build start
+ESM dist/index.js              196.00 B
+ESM dist/chunk-TCO2LCXV.js     598.00 B
+ESM dist/ui.js                 99.00 B
+ESM dist/chunk-AMXWI7JA.js     22.20 KB
+ESM dist/auth.js               181.00 B
+ESM dist/index.js.map          71.00 B
+ESM dist/ui.js.map             71.00 B
+ESM dist/chunk-TCO2LCXV.js.map 1.18 KB
+ESM dist/auth.js.map           71.00 B
+ESM dist/chunk-AMXWI7JA.js.map 35.00 KB
+ESM ⚡️ Build success in 15ms
+CJS dist/index.cjs     25.74 KB
+CJS dist/ui.cjs        1.60 KB
+CJS dist/auth.cjs      25.75 KB
+CJS dist/index.cjs.map 35.81 KB
+CJS dist/ui.cjs.map    1.29 KB
+CJS dist/auth.cjs.map  35.89 KB
+CJS ⚡️ Build success in 15ms
+DTS Build start
+DTS ⚡️ Build success in 1078ms
+DTS dist/ui.d.ts     310.00 B
+DTS dist/auth.d.ts   2.16 KB
+DTS dist/index.d.ts  130.00 B
+DTS dist/ui.d.cts    310.00 B
+DTS dist/auth.d.cts  2.16 KB
+DTS dist/index.d.cts 132.00 B
+≈ tailwindcss v4.2.0
+
+Done in 39ms

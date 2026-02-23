@@ -21,6 +21,7 @@ export type LoginProps = {
   title?: string;
   subtitle?: string;
   submitLabel?: string;
+  buttonProps?: Omit<React.ComponentProps<typeof Button>, "type" | "disabled" | "children">;
   footer?: React.ReactNode;
 };
 
@@ -36,6 +37,7 @@ export default function Login({
   title = "Welcome back",
   subtitle = "Sign in to your account to continue",
   submitLabel = "Sign in",
+  buttonProps,
   footer,
 }: LoginProps) {
   const [values, setValues] = useState<Record<string, string>>({});
@@ -73,18 +75,18 @@ export default function Login({
 
   // ── Design tokens ──────────────────────────────────────────────────────────
   const T = {
-    pageBg:   isDark ? "bg-gray-950"                         : "bg-gray-50",
-    cardBg:   isDark ? "bg-gray-900 border-gray-800"         : "bg-white border-gray-100",
-    heading:  isDark ? "text-white"                          : "text-gray-900",
-    subtext:  isDark ? "text-gray-400"                       : "text-gray-500",
-    label:    isDark ? "text-gray-300"                       : "text-gray-700",
-    input:    isDark
+    pageBg: isDark ? "bg-gray-950" : "bg-gray-50",
+    cardBg: isDark ? "bg-gray-900 border-gray-800" : "bg-white border-gray-100",
+    heading: isDark ? "text-white" : "text-gray-900",
+    subtext: isDark ? "text-gray-400" : "text-gray-500",
+    label: isDark ? "text-gray-300" : "text-gray-700",
+    input: isDark
       ? "border-gray-700 bg-gray-800 text-white placeholder-gray-500 focus:ring-indigo-500 focus:bg-gray-800"
       : "border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-black focus:bg-white",
-    eyeBtn:   isDark ? "text-gray-500 hover:text-gray-200"   : "text-gray-400 hover:text-gray-700",
-    iconBg:   isDark ? "bg-indigo-600"                       : "bg-black",
-    error:    isDark ? "text-red-400 bg-red-950 border-red-900"   : "text-red-700 bg-red-50 border-red-100",
-    success:  isDark ? "text-green-400 bg-green-950 border-green-900" : "text-green-700 bg-green-50 border-green-100",
+    eyeBtn: isDark ? "text-gray-500 hover:text-gray-200" : "text-gray-400 hover:text-gray-700",
+    iconBg: isDark ? "bg-indigo-600" : "bg-black",
+    error: isDark ? "text-red-400 bg-red-950 border-red-900" : "text-red-700 bg-red-50 border-red-100",
+    success: isDark ? "text-green-400 bg-green-950 border-green-900" : "text-green-700 bg-green-50 border-green-100",
   };
 
   const handleChange = (name: string, value: string) =>
@@ -130,7 +132,7 @@ export default function Login({
           {error && (
             <div className={`flex items-start gap-2 text-sm rounded-lg px-4 py-3 mb-5 border ${T.error}`}>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 shrink-0">
-                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
               </svg>
               {error}
             </div>
@@ -139,7 +141,7 @@ export default function Login({
           {success && (
             <div className={`flex items-start gap-2 text-sm rounded-lg px-4 py-3 mb-5 border ${T.success}`}>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 shrink-0">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
               </svg>
               {success}
             </div>
@@ -151,15 +153,15 @@ export default function Login({
                 field.label ??
                 (field.name === "email" ? "Email address"
                   : field.name === "username" ? "Username"
-                  : field.name === "phone" ? "Phone number"
-                  : "Password");
+                    : field.name === "phone" ? "Phone number"
+                      : "Password");
 
               const placeholder =
                 field.placeholder ??
                 (field.name === "email" ? "you@example.com"
                   : field.name === "username" ? "e.g. username"
-                  : field.name === "phone" ? "e.g. 012345678"
-                  : "••••••••");
+                    : field.name === "phone" ? "e.g. 012345678"
+                      : "••••••••");
 
               const type =
                 field.name === "password"
@@ -179,9 +181,8 @@ export default function Login({
                       value={values[field.name] ?? ""}
                       onChange={(e) => handleChange(field.name, e.target.value)}
                       placeholder={placeholder}
-                      className={`w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed ${T.input} ${
-                        field.name === "password" ? "pr-16" : ""
-                      }`}
+                      className={`w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed ${T.input} ${field.name === "password" ? "pr-16" : ""
+                        }`}
                     />
                     {field.name === "password" && (
                       <button
@@ -199,9 +200,10 @@ export default function Login({
             })}
 
             <Button
+              {...buttonProps}
               type="submit"
               disabled={isLoading}
-              style={{ width: "100%", marginTop: 8 }}
+              style={{ width: "100%", marginTop: 8, ...buttonProps?.style }}
             >
               {isLoading ? "Signing in…" : submitLabel}
             </Button>
